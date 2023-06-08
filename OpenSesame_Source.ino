@@ -1,6 +1,6 @@
 #include <Arduino.h>
  /*
-
+Incluye librerias arduino
 */
 
 #define DMAX 10
