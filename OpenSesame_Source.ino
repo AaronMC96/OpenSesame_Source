@@ -6,8 +6,6 @@ Incluye librerias arduino
 //Código para funcionamiento de Relé y Sensor combinado
 
 
-//Preuba de merge 
-//Prueba 2
 #define DMAX 10
 /*Pines*/
 #define pinLedOn   16
