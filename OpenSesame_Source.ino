@@ -7,6 +7,7 @@ Incluye librerias arduino
 
 
 //Preuba de merge 
+//Prueba 2
 #define DMAX 10
 /*Pines*/
 #define pinLedOn   16
