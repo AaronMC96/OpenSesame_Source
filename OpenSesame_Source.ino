@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <LoRa.h>
  /*
 Incluye librerias arduino
 */
