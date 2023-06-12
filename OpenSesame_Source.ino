@@ -240,3 +240,4 @@ void loop(){
     //t0 = millis();                              //Toma el tiempo incial de recepción
 
   } 
+
