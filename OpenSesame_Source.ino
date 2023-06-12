@@ -18,6 +18,8 @@ Incluye librerias arduino
 #define R3  33
 #define R4  25
 
+//cambio
+
 int DISTANCIA = 0;
 
 long readUltrasonicDistance(int triggerPin, int echoPin)
