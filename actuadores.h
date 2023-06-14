@@ -13,8 +13,8 @@
 #define R4  25
 
 /* Funciones */
-void actuadores_config(void)
-void actuadores_rnwork(int d);
+void actuadores_Setup(void)
+void actuadores_Loop(int d);
 
 //long readUltrasonicDistance(int triggerPin, int echoPin); -- Funciones ocultas
 //void relay_status(int d);
