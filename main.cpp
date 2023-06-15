@@ -12,7 +12,7 @@ void setup() {
 
 }
 
-
+//Bucle principal
 void loop() {
 	if(firebase_Loop() == "OPEN");
 	{
