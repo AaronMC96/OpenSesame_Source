@@ -1,9 +1,11 @@
+/* Libraries */
 #include "actuadores.h"
-
+/* Defines */
 #define DMAX 10  //Distancia máxima de sensado
 
-void actuadores_config() {
-  Serial.begin(115200);
+/*IMPORTANTE, INICIALIZAR Serial.begin(115200) YA QUE NINGUNA FUNCION DE CONFIG LO ESTÁ HACIENDO; */
+ 
+void actuadores_Setup() {
   //Configuramos el pin del led como salida
   pinMode(pinLedOn, OUTPUT);
   pinMode(pinLedOff, OUTPUT);
@@ -43,7 +45,7 @@ long readUltrasonicDistance(int triggerPin, int echoPin)
 }
 
 
-void relay_status(int d)
+void relay_Status(int d)
 {
   if( d < DMAX)
   {
@@ -67,7 +69,7 @@ void relay_status(int d)
   }
 }
 
-void actuadores_rnwork(int d) {
+void actuadores_Loop(int d) {
   //Calculamos la distancia en cm
   d = 0.01723 * readUltrasonicDistance(pinGatillo, pinEco);
   //Mostramos la distancia
