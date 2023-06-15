@@ -21,7 +21,9 @@ const int led = 2;//led
 unsigned long sendDataPrevMillis = 0;
 unsigned long timerDelay = 2000;
 
+
 /* Funtions */
+/*IMPORTANTE, INICIALIZAR Serial.begin(115200) YA QUE NINGUNA FUNCION DE CONFIG LO ESTÁ HACIENDO; */
 /*
 	Inicializa el WiFi
 */
@@ -57,7 +59,7 @@ void sendFloat(String path, float value){
 /*
 	Lee los datos y puede actuar en consecuencia. En este caso si lee ON enciende un LED.
 */
-void readData(String path){
+char* readData(String path){
   String readIncoming ="";
   if (Firebase.RTDB.getString(&fbdo, path.c_str())){
     Serial.println("PATH: " + fbdo.dataPath());
@@ -65,18 +67,14 @@ void readData(String path){
     if(fbdo.dataType()=="string"){
       readIncoming =fbdo.stringData();
        Serial.println("DATA: " + readIncoming);
-      if(readIncoming=="ON"){
-        digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
-        }
-      else{
-         digitalWrite(led, LOW);   // turn the LED off (LOW is the voltage level)
-      }
     }
+	
   }
   else {
     Serial.println("FAILED");
     Serial.println("REASON: " + fbdo.errorReason());
   }
+  return &readIncoming; //devuelvo la dirección de memoria
 }
 /*
 	Inicializa y configura todos los elementos necesarios
@@ -129,12 +127,14 @@ void firebase_Setup(void)
 /*
 	Loop
 */ 
-void firebase_Loop(void)
+char* firebase_Loop(void)
 {
   // Send new readings to database
   if (Firebase.ready() && (millis() - sendDataPrevMillis > timerDelay || sendDataPrevMillis == 0)){
     sendDataPrevMillis = millis();
 
-    readData(ledPath);
+    char* firebase_msg = &readData(ledPath);
+	return ...
+	
   }
 }

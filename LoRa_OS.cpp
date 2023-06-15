@@ -94,6 +94,7 @@ else {
 			SENDER = true 	  -    TRANSMISIÓN
 			SENDER = false    -    RECEPCIÓN
 		y el tiempo de timeOut para recepción deseado tF.
+	Devuelve el tiempo total
 	
 	Lo demás funciona igual que la función anterior.
 */
@@ -142,7 +143,8 @@ else {
 	  t0 = millis() - t0;
 	  
     }
-//Si no se recibio nada, espera un TimeOut y pasa al MODO TRANMISIÓN
+//Si no se recibio nada, espera un TimeOut y sale
     if (t0 >= tF) Serial.println("Timeout ");
   }     
+  return t0;
 }

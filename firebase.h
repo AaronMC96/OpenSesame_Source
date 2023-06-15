@@ -1,5 +1,4 @@
 /*  Libraries */
-#include <Arduino.h>
 #include <Firebase_ESP_Client.h>
 #include <Wire.h>
 #include "addons/TokenHelper.h" // Provide the token generation process info.

@@ -8,7 +8,10 @@
 #define MOSI 23  //GPIO23 -- SX1278's MOSI
 #define SS 05    //GPIO5 -- SX1278's CS
 #define RST 14   //GPIO14 -- SX1278's RESET
-#define DI0 02   //GPIO2  -- SX1278's IRQ(Interrupt Request)	
+#define DI0 02   //GPIO2  -- SX1278's IRQ(Interrupt Request)
+
+#define LEDTX 	16 //
+#define LEDRX	17 //
 
 /* Local Variables */ 
 bool SENDER = false;
