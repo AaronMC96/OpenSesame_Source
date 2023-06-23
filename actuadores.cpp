@@ -4,7 +4,7 @@
 #define DMAX 10  //Distancia máxima de sensado
 
 /*IMPORTANTE, INICIALIZAR Serial.begin(115200) YA QUE NINGUNA FUNCION DE CONFIG LO ESTÁ HACIENDO; */
- 
+
 void actuadores_Setup() {
   //Configuramos el pin del led como salida
   pinMode(pinLedOn, OUTPUT);
@@ -20,12 +20,10 @@ void actuadores_Setup() {
   digitalWrite(R2, LOW);
   digitalWrite(R3, LOW);
   digitalWrite(R4, LOW);
-
 }
 
 
-long readUltrasonicDistance(int triggerPin, int echoPin)
-{
+long readUltrasonicDistance(int triggerPin, int echoPin) {
   //Iniciamos el pin del emisor de reuido en salida
   pinMode(triggerPin, OUTPUT);
   //Apagamos el emisor de sonido
@@ -45,20 +43,16 @@ long readUltrasonicDistance(int triggerPin, int echoPin)
 }
 
 
-void relay_Status(int d)
-{
-  if( d < DMAX)
-  {
+void relay_Status(int d) {
+  if (d < DMAX) {
     digitalWrite(R1, HIGH);
     digitalWrite(R2, HIGH);
     digitalWrite(R3, LOW);
     digitalWrite(R4, LOW);
-    
+
     digitalWrite(pinLedOn, HIGH);
-    digitalWrite(pinLedOff, LOW); 
-  } 
-  else
-  {
+    digitalWrite(pinLedOff, LOW);
+  } else {
     digitalWrite(R1, LOW);
     digitalWrite(R2, LOW);
     digitalWrite(R3, HIGH);
@@ -75,6 +69,6 @@ void actuadores_Loop(int d) {
   //Mostramos la distancia
   Serial.println(d);
 
-  relay(d);
-  delay(500);
-} 
+  relay_Status(d);
+  //delay(500);
+}

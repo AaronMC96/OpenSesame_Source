@@ -15,7 +15,7 @@ String uid;
 // Variables to save database paths
 String databasePath;
 String ledPath;
-const int led = 2;//led
+const int led = 2;  //led
 
 // Timer variables (send new readings every three minutes)
 unsigned long sendDataPrevMillis = 0;
@@ -41,17 +41,16 @@ void initWiFi() {
 /*
 	Escribe un float en database
 */
-void sendFloat(String path, float value){
-  if (Firebase.RTDB.setFloat(&fbdo, path.c_str(), value)){
+void sendFloat(String path, float value) {
+  if (Firebase.RTDB.setFloat(&fbdo, path.c_str(), value)) {
     Serial.print("Writing value: ");
-    Serial.print (value);
+    Serial.print(value);
     Serial.print(" on the following path: ");
     Serial.println(path);
     Serial.println("PASSED");
     Serial.println("PATH: " + fbdo.dataPath());
     Serial.println("TYPE: " + fbdo.dataType());
-  }
-  else {
+  } else {
     Serial.println("FAILED");
     Serial.println("REASON: " + fbdo.errorReason());
   }
@@ -59,29 +58,27 @@ void sendFloat(String path, float value){
 /*
 	Lee los datos y puede actuar en consecuencia. En este caso si lee ON enciende un LED.
 */
-char* readData(String path){
-  String readIncoming ="";
-  if (Firebase.RTDB.getString(&fbdo, path.c_str())){
+char* readData(String path) {
+  String readIncoming = "";
+  if (Firebase.RTDB.getString(&fbdo, path.c_str())) {
     Serial.println("PATH: " + fbdo.dataPath());
     Serial.println("TYPE: " + fbdo.dataType());
-    if(fbdo.dataType()=="string"){
-      readIncoming =fbdo.stringData();
-       Serial.println("DATA: " + readIncoming);
+    if (fbdo.dataType() == "string") {
+      readIncoming = fbdo.stringData();
+      Serial.println("DATA: " + readIncoming);
     }
-	
-  }
-  else {
+
+  } else {
     Serial.println("FAILED");
     Serial.println("REASON: " + fbdo.errorReason());
   }
-  return &readIncoming; //devuelvo la dirección de memoria
+  return &readIncoming;  //devuelvo la dirección de memoria
 }
 /*
 	Inicializa y configura todos los elementos necesarios
 */
-void firebase_Setup(void)
-{
-	pinMode(led, OUTPUT);
+void firebase_Setup(void) {
+  pinMode(led, OUTPUT);
   //initBME();
   initWiFi();
 
@@ -99,7 +96,7 @@ void firebase_Setup(void)
   fbdo.setResponseSize(4096);
 
   // Assign the callback function for the long running token generation task */
-  config.token_status_callback = tokenStatusCallback; //see addons/TokenHelper.h
+  config.token_status_callback = tokenStatusCallback;  //see addons/TokenHelper.h
 
   // Assign the maximum retry of token generation
   config.max_token_generation_retry = 5;
@@ -122,19 +119,17 @@ void firebase_Setup(void)
   databasePath = "/UsersData/" + uid;
 
   // Update database path for sensor readings
-  ledPath = databasePath + "/led"; // --> UsersData/<user_uid>/led
+  ledPath = databasePath + "/led";  // --> UsersData/<user_uid>/led
 }
 /*
 	Loop
-*/ 
-char* firebase_Loop(void)
-{
+*/
+char* firebase_Loop(void) {
   // Send new readings to database
-  if (Firebase.ready() && (millis() - sendDataPrevMillis > timerDelay || sendDataPrevMillis == 0)){
+  if (Firebase.ready() && (millis() - sendDataPrevMillis > timerDelay || sendDataPrevMillis == 0)) {
     sendDataPrevMillis = millis();
 
     char* firebase_msg = &readData(ledPath);
-	return ...
-	
+    return ...
   }
 }

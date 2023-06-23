@@ -1,10 +1,91 @@
 #include <Arduino.h>
+#include "firebase.h"
+#include "LoRa_OS.h"
+
+
+
+/* MODULO PRINCIPAL (Servidor)*/
+void setup() {
+  Serial.begin(115200);  //arduino serial config.
+  firebase_Setup();      //lora module config.
+  lora_Setup();          //sensor and rele config.
+}
+
+/*
+  BUCLE PRICINPAL
+
+  Si se recibe un comando de apertura mediante el servidor (firebase)
+  comienza la tranmisión desde PRINCIPAL a MECANISMO
+
+  Sino se queda en modo RX (recepción)
+
+  Cosas que no estaría mal agregar:
+    INFORMACIÓN SOBRE EL MODULO MECANISMO:
+    - TEMPERATURA
+    - EST. DE BATERIA
+
+    - TRANSMITIR MÁS DE UNA VEZ (?)
+    - CRC !
+
+
+
+    La función lora_Loop esta medio al pedo. Podría quedar para hacer testeos.
+    Y es una buena idea: Implementar funciones de prueba x si algo falla cuando este todo armado. 
+*/
+void loop() {
+  if (firebase_Loop() == "OPEN")  //Si se envia el comando "abrir" - Tal vez el comando puede ser "ACCIONAR" y togglear MECANISMO
+  {
+    lora_Noloop(true, "ALGO")         //Se pone el modulo en modo TX - No hay timeout
+  } 
+  //Esto que sigue estaría obteniendo información del modulo mecanismo
+  //else lora_Noloop(false, "1000");  //Se pone en modo RX - Esta función tiene una respuesta lenta. Se queda 'tF' segundos en ella.
+
+
+  delay(100) //si fuera necesario
+}
+
+/*
+  La idea es de alguna manera el firebase loop trabaje tomando varios comandos mediante un case...pj.
+  y esto lo enviará el lora loop. 
+
+  Creo que las funciones terminan siendo medio parecidas y deberiamos trabajarlas en conjunto.
+  Si es posible mediante switch que quede bien ordenado en cada una cada cual opción. Y estas opciones deben 
+  propocionar distintas configuraciones agregadas.
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*#include <Arduino.h>
 //Librerias
 #include <LoRa.h>
 #if defined(ESP32)
-  #include <WiFi.h>
+#include <WiFi.h>
 #elif defined(ESP8266)
-  #include <ESP8266WiFi.h>
+#include <ESP8266WiFi.h>
 #endif
 #include <Firebase_ESP_Client.h>
 #include <Wire.h>
@@ -67,15 +148,15 @@ string status_Led = "OFF";
 
 
 //Local Variables
-bool SENDER = false;           //Conmutador entre recepción y tranmisión
-unsigned long t0 = 0;         //Tiempo de inicio para el TimeOut
+bool SENDER = false;   //Conmutador entre recepción y tranmisión
+unsigned long t0 = 0;  //Tiempo de inicio para el TimeOut
 
 <<<<<<< HEAD
 //cambio
 
 int DISTANCIA = 0;
-=======
-/**************************************
+== == == =
+  /**************************************
 TODO:
  - CAMBIAR LED A TX P16 Y RX P17
  - IMPLEMENTAR GITHUB
@@ -86,9 +167,9 @@ TODO:
 
  Los dos últimos son medios generales, a medida que nos vayamos metiendo pondriamos TODOs más específicos
 **************************************/
-
-// Initialize WiFi
-void initWiFi() {
+/*
+  // Initialize WiFi
+  void initWiFi() {
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
   Serial.print("Connecting to WiFi ..");
   while (WiFi.status() != WL_CONNECTED) {
@@ -100,62 +181,61 @@ void initWiFi() {
 }
 
 // Write float values to the database
-void sendFloat(String path, float value){
-  if (Firebase.RTDB.setFloat(&fbdo, path.c_str(), value)){
+void sendFloat(String path, float value) {
+  if (Firebase.RTDB.setFloat(&fbdo, path.c_str(), value)) {
     Serial.print("Writing value: ");
-    Serial.print (value);
+    Serial.print(value);
     Serial.print(" on the following path: ");
     Serial.println(path);
     Serial.println("PASSED");
     Serial.println("PATH: " + fbdo.dataPath());
     Serial.println("TYPE: " + fbdo.dataType());
-  }
-  else {
+  } else {
     Serial.println("FAILED");
     Serial.println("REASON: " + fbdo.errorReason());
   }
 }
-void readData(String path){
-  String readIncoming ="";
-  if (Firebase.RTDB.getString(&fbdo, path.c_str())){
+void readData(String path) {
+  String readIncoming = "";
+  if (Firebase.RTDB.getString(&fbdo, path.c_str())) {
     Serial.println("PATH: " + fbdo.dataPath());
     Serial.println("TYPE: " + fbdo.dataType());
-    if(fbdo.dataType()=="string"){
-      readIncoming =fbdo.stringData();
-       Serial.println("DATA: " + readIncoming);
-      if(readIncoming=="ON"){
-        digitalWrite(LEDRX, HIGH);   // turn the LED on (HIGH is the voltage level)
-        status_Led="ON";
-        }
-      else{
-         digitalWrite(LEDRX, LOW);   // turn the LED off (LOW is the voltage level)
-         status_Led="OFF";
+    if (fbdo.dataType() == "string") {
+      readIncoming = fbdo.stringData();
+      Serial.println("DATA: " + readIncoming);
+      if (readIncoming == "ON") {
+        digitalWrite(LEDRX, HIGH);  // turn the LED on (HIGH is the voltage level)
+        status_Led = "ON";
+      } else {
+        digitalWrite(LEDRX, LOW);  // turn the LED off (LOW is the voltage level)
+        status_Led = "OFF";
       }
     }
-  }
-  else {
+  } else {
     Serial.println("FAILED");
     Serial.println("REASON: " + fbdo.errorReason());
   }
 }
 
-void setup(){
+void setup() {
   //Configura la conexión serial en 115200 baudios
-  Serial.begin(115200);                           
-  while (!Serial);
+  Serial.begin(115200);
+  while (!Serial)
+    ;
 
   //Configura los pins del modulo RF85 - Si no hay exito queda en un loop y manda un mensaje de error
-  LoRa.setPins(SS, RST, DI0);                           
+  LoRa.setPins(SS, RST, DI0);
   if (!LoRa.begin(915E6)) {
     Serial.println("Error iniciando el módulo LoRa");
-    while (1);
-  } else Serial.println("Módulo LoRa iniciado correctamente"); //Éxito!
+    while (1)
+      ;
+  } else Serial.println("Módulo LoRa iniciado correctamente");  //Éxito!
 
-  //Configuración de GPIOs 
-  pinMode(LEDTX, OUTPUT); //LED testigo
+  //Configuración de GPIOs
+  pinMode(LEDTX, OUTPUT);  //LED testigo
   pinMode(LEDRX, OUTPUT);
-  digitalWrite(LEDTX, LOW); 
-  digitalWrite(LEDRX, LOW); 
+  digitalWrite(LEDTX, LOW);
+  digitalWrite(LEDRX, LOW);
 
   //initBME();
   initWiFi();
@@ -173,8 +253,8 @@ void setup(){
   Firebase.reconnectWiFi(true);
   fbdo.setResponseSize(4096);
 
-  // Assign the callback function for the long running token generation task */
-  config.token_status_callback = tokenStatusCallback; //see addons/TokenHelper.h
+  // Assign the callback function for the long running token generation task /
+  config.token_status_callback = tokenStatusCallback;  //see addons/TokenHelper.h
 
   // Assign the maximum retry of token generation
   config.max_token_generation_retry = 5;
@@ -197,47 +277,45 @@ void setup(){
   databasePath = "/UsersData/" + uid;
 
   // Update database path for sensor readings
-  ledPath = databasePath + "/led"; // --> UsersData/<user_uid>/led
+  ledPath = databasePath + "/led";  // --> UsersData/<user_uid>/led
 }
 
-void loop(){
+void loop() {
   // Send new readings to database
-  if (Firebase.ready() && (millis() - sendDataPrevMillis > timerDelay || sendDataPrevMillis == 0)){
+  if (Firebase.ready() && (millis() - sendDataPrevMillis > timerDelay || sendDataPrevMillis == 0)) {
     sendDataPrevMillis = millis();
 
     readData(ledPath);
   }
 
 
-/******** MODO TRANMISIÓN ********/
+  /******** MODO TRANMISIÓN ********
   if (SENDER) {
 
-    if (status_Led=="ON"){
+    if (status_Led == "ON") {
 
-      digitalWrite(LEDTX, HIGH);                      // Prende led testigo
-      // Comienzo de la tranmisión 
+      digitalWrite(LEDTX, HIGH);  // Prende led testigo
+      // Comienzo de la tranmisión
       LoRa.beginPacket();
       LoRa.print("ON");
       LoRa.endPacket();
       Serial.println("Mensaje Enviado");
-      // Fin de la tranmisión      
+      // Fin de la tranmisión
       digitalWrite(LEDTX, LOW);
     }
 
-    else if (status_Led=="OFF"){
+    else if (status_Led == "OFF") {
 
-      digitalWrite(LEDTX, HIGH);                      // Prende led testigo
-      // Comienzo de la tranmisión 
+      digitalWrite(LEDTX, HIGH);  // Prende led testigo
+      // Comienzo de la tranmisión
       LoRa.beginPacket();
       LoRa.print("OFF");
       LoRa.endPacket();
       Serial.println("Mensaje Enviado");
-      // Fin de la tranmisión   
-      digitalWrite(LEDTX, LOW);   
+      // Fin de la tranmisión
+      digitalWrite(LEDTX, LOW);
     }
 
     //SENDER = false;
     //t0 = millis();                              //Toma el tiempo incial de recepción
-
-  } 
-
+  }

@@ -1,6 +1,7 @@
 /* Libraries */
-#include <LoRa.h>	//Externo	
-#include "LoRa_OS.h" //Libreria interna OS
+#include <LoRa.h>     //Externo
+#include <String>
+#include "LoRa_OS.h"  //Libreria interna OS
 
 /* LoRa PIN Defines */
 #define SCK 18   //GPIO18  -- SX1278's SCK
@@ -10,14 +11,14 @@
 #define RST 14   //GPIO14 -- SX1278's RESET
 #define DI0 02   //GPIO2  -- SX1278's IRQ(Interrupt Request)
 
-#define LEDTX 	16 //
-#define LEDRX	17 //
+#define LEDTX 16  //
+#define LEDRX 17  //
 
-/* Local Variables */ 
+/* Local Variables */
 bool SENDER = false;
 unsigned long t0 = 0;
 
 /* Funciones Globables */
 void lora_Setup(void);
 void lora_Loop(void);
-u long lora_NoLoop(bool SENDER, long tF);
+String lora_NoLoop(bool SENDER, String Msg);
